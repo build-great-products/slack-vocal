@@ -5,10 +5,11 @@ A tool to chart message activity of multiple Slack users over time.
 ## Features
 
 - Track message activity for multiple Slack users (up to 5)
-- Generate an HTML chart showing message counts per day
+- Generate an interactive HTML chart with time period aggregation
+- Toggle between daily, weekly, and monthly views
 - Display data for the last 90 days
-- Colorblind-friendly visualization 
-- Automatic user details fetching from Slack
+- Colorblind-friendly visualization
+- Automatic user details fetching from Slack API
 
 ## Setup
 
@@ -37,12 +38,6 @@ A tool to chart message activity of multiple Slack users over time.
 2. Add the following OAuth scopes:
    - channels:history
    - channels:read
-   - groups:history
-   - groups:read
-   - im:history
-   - im:read
-   - mpim:history
-   - mpim:read
    - users:read
 3. Install the app to your workspace
 4. Copy the Bot User OAuth Token as your `SLACK_TOKEN`
@@ -50,7 +45,11 @@ A tool to chart message activity of multiple Slack users over time.
 
 ## Output
 
-The application generates an HTML chart file (`slack-activity.html`) that you can open in any web browser.
+The application generates an HTML chart file (`slack-activity.html`) that you can open in any web browser. The chart includes:
+
+- Line graphs showing message activity for each user
+- Interactive time period selector to switch between daily, weekly, and monthly views
+- Hover tooltips showing exact message counts
 
 ### GitHub Pages Deployment
 
