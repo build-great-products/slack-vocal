@@ -1,5 +1,5 @@
 import { html } from "htm/preact";
-import type { TimeUnit } from "../types.d.ts";
+import type { TimeUnit } from "../types.ts";
 
 interface TimeSelectorProps {
 	activeTimeUnit: TimeUnit;

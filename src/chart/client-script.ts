@@ -1,63 +1,60 @@
 export function generateClientScript(chartData: Record<string, unknown>) {
 	return `
-    // Import Preact
+    // Import Preact and Recharts
     import { h, render, hydrate } from 'https://esm.sh/preact@10.26.4';
     import { html } from 'https://esm.sh/htm@3.1.1/preact';
-    import { useEffect, useState } from 'https://esm.sh/preact@10.26.4/hooks';
+    import { useEffect, useState, useRef } from 'https://esm.sh/preact@10.26.4/hooks';
+    import {
+      AreaChart, Area, XAxis, YAxis, CartesianGrid,
+      Tooltip, Legend, ResponsiveContainer
+    } from 'https://esm.sh/recharts@2.15.1';
     
     // Store all datasets
     const chartData = ${JSON.stringify(chartData)};
-    let chart;
     
-    // Create Preact components
-    function ChartComponent() {
-      useEffect(() => {
-        // Initialize Chart.js after component mounts
-        const ctx = document.getElementById('messageChart').getContext('2d');
-        chart = new Chart(ctx, {
-          type: 'line',
-          data: chartData.day,
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              y: {
-                beginAtZero: true,
-                stacked: false,
-                title: {
-                  display: true,
-                  text: 'Number of Messages'
-                }
-              },
-              x: {
-                title: {
-                  display: true,
-                  text: 'Date'
-                }
-              }
-            },
-            interaction: {
-              mode: 'index',
-              intersect: false
-            }
-          }
-        });
-        
-        // Cleanup when component unmounts
-        return () => {
-          if (chart) {
-            chart.destroy();
-          }
-        };
-      }, []);
+    // Recharts component for our chart
+    function Chart({ data, period }) {
+      const { data: chartPoints, series } = chartData[period];
       
       return html\`
+        <\${ResponsiveContainer} width="100%" height={400}>
+          <\${AreaChart}
+            data=\${chartPoints}
+            margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+          >
+            <\${CartesianGrid} strokeDasharray="3 3" />
+            <\${XAxis} dataKey="date" />
+            <\${YAxis} allowDecimals={false} />
+            <\${Tooltip} />
+            <\${Legend} />
+            \${series.map(s => html\`
+              <\${Area}
+                key=\${s.dataKey}
+                type=\${s.type}
+                dataKey=\${s.dataKey}
+                name=\${s.name}
+                stroke=\${s.stroke}
+                fill=\${s.fill}
+                fillOpacity=\${s.fillOpacity}
+                connectNulls
+                activeDot=\${s.activeDot}
+              />
+            \`)}
+          </\${AreaChart}>
+        </\${ResponsiveContainer}>
+      \`;
+    }
+    
+    // Chart component wrapper
+    function ChartComponent({ activeTimeUnit }) {
+      return html\`
         <div className="chart-container">
-          <canvas id="messageChart" />
+          <\${Chart} period=\${activeTimeUnit} />
         </div>
       \`;
     }
     
+    // Time period selector component
     function TimeSelector({ activeTimeUnit, onTimeUnitChange }) {
       return html\`
         <div className="time-selector">
@@ -89,28 +86,13 @@ export function generateClientScript(chartData: Record<string, unknown>) {
       \`;
     }
     
+    // Main app component
     function App() {
       const [activeTimeUnit, setActiveTimeUnit] = useState("day");
       
       const handleTimeUnitChange = (period) => {
         if (activeTimeUnit !== period) {
           setActiveTimeUnit(period);
-          
-          // Update chart data
-          chart.data.labels = chartData[period].labels;
-          chart.data.datasets = chartData[period].datasets;
-          
-          // Update title text based on period
-          let titleText = 'Date';
-          if (period === 'week') {
-            titleText = 'Week';
-          } else if (period === 'month') {
-            titleText = 'Month';  
-          }
-          chart.options.scales.x.title.text = titleText;
-          
-          // Update chart
-          chart.update();
         }
       };
       
@@ -118,7 +100,7 @@ export function generateClientScript(chartData: Record<string, unknown>) {
         <div className="container">
           <h1>Slack Message Activity (Last 90 Days)</h1>
           <\${TimeSelector} activeTimeUnit=\${activeTimeUnit} onTimeUnitChange=\${handleTimeUnitChange} />
-          <\${ChartComponent} />
+          <\${ChartComponent} activeTimeUnit=\${activeTimeUnit} />
         </div>
       \`;
     }
@@ -127,7 +109,7 @@ export function generateClientScript(chartData: Record<string, unknown>) {
     document.addEventListener('DOMContentLoaded', () => {
       const container = document.querySelector('.container');
       // Pass the chartData so the client has access to it
-      hydrate(h(App, { chartData }), container.parentNode, container);
+      hydrate(h(App, {}), container.parentNode, container);
     });
   `;
 }

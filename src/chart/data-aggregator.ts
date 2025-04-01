@@ -7,13 +7,9 @@ import {
 	parseISO,
 	subDays,
 } from "date-fns";
+import type { UserInfo, UserMessageCounts } from "../types.ts";
 import { COLORBLIND_FRIENDLY_COLORS } from "./colors.ts";
-import type {
-	AggregatedData,
-	TimeUnit,
-	UserInfo,
-	UserMessageCounts,
-} from "./types.d.ts";
+import type { AggregatedData, ChartDataset } from "./types.ts";
 
 // Generate an array of days for a time period
 export function generateDateRange(days = 90): string[] {
@@ -31,31 +27,32 @@ function prepareChartData(
 	users: UserInfo[],
 	dates: string[],
 ): AggregatedData {
-	const datasets = users.map((user, index) => {
+	const datasets: ChartDataset[] = users.map((user, index) => {
 		const messageCounts = userMessageCounts[user.id] || {};
-		const userData = dates.map((date) => messageCounts[date] || 0);
+		const userData = dates.map((date) =>
+			messageCounts[date] ? messageCounts[date] : null,
+		);
 		const color =
 			COLORBLIND_FRIENDLY_COLORS[index % COLORBLIND_FRIENDLY_COLORS.length];
-		const borderColor = color.replace("0.6", "1");
+		const fillColor = color;
+		const strokeColor = color.replace("0.6", "1");
 
 		return {
-			label: user.name,
+			name: user.name,
 			data: userData,
-			backgroundColor: color,
-			borderColor: borderColor,
-			borderWidth: 2,
-			tension: 0.1,
-			pointRadius: 3,
-			pointHoverRadius: 5,
-			pointBackgroundColor: borderColor,
-			fill: false,
+			fill: fillColor,
+			stroke: strokeColor,
+			type: "monotone",
+			dataKey: user.id,
+			fillOpacity: 0.6,
+			activeDot: { r: 5 },
 		};
 	});
 
 	return {
-		labels: dates,
+		dates,
 		datasets,
-	};
+	} satisfies AggregatedData;
 }
 
 // Aggregate data by week or month
@@ -118,30 +115,65 @@ function aggregateByTimeUnit(
 
 	// Create datasets for chart
 	const datasets = users.map((user, index) => {
-		const userData = timeLabels.map(
-			(timeKey) => aggregatedCounts[user.id][timeKey] || 0,
-		);
+		const userData = timeLabels.map((timeKey) => {
+			const count = aggregatedCounts[user.id][timeKey];
+			return count && count > 0 ? count : null;
+		});
 		const color =
 			COLORBLIND_FRIENDLY_COLORS[index % COLORBLIND_FRIENDLY_COLORS.length];
-		const borderColor = color.replace("0.6", "1");
+		const fillColor = color;
+		const strokeColor = color.replace("0.6", "1");
 
 		return {
-			label: user.name,
+			name: user.name,
 			data: userData,
-			backgroundColor: color,
-			borderColor: borderColor,
-			borderWidth: 2,
-			tension: 0.1,
-			pointRadius: 3,
-			pointHoverRadius: 5,
-			pointBackgroundColor: borderColor,
-			fill: false,
+			fill: fillColor,
+			stroke: strokeColor,
+			type: "monotone",
+			dataKey: user.id,
+			fillOpacity: 0.6,
+			activeDot: { r: 5 },
 		};
 	});
 
 	return {
-		labels: displayLabels,
+		dates: displayLabels,
 		datasets,
+	};
+}
+
+// Format data for Recharts
+function formatForRecharts(aggregatedData: AggregatedData, users: UserInfo[]) {
+	const { dates, datasets } = aggregatedData;
+
+	// Transform data for Recharts
+	const formattedData = dates.map((date, index) => {
+		const dataPoint: Record<string, number | string | null> = { date };
+
+		// Add each user's data
+		datasets.forEach((dataset, userIndex) => {
+			const userId = users[userIndex].id;
+			dataPoint[userId] = dataset.data[index];
+			dataPoint[`${userId}_name`] = users[userIndex].name;
+		});
+
+		return dataPoint;
+	});
+
+	// Prepare the series configuration
+	const series = datasets.map((dataset) => ({
+		dataKey: dataset.dataKey,
+		name: dataset.name,
+		fill: dataset.fill,
+		stroke: dataset.stroke,
+		type: dataset.type,
+		fillOpacity: dataset.fillOpacity,
+		activeDot: dataset.activeDot,
+	}));
+
+	return {
+		data: formattedData,
+		series,
 	};
 }
 
@@ -160,6 +192,7 @@ export function prepareAllChartData(
 
 	// Prepare the daily data
 	const dailyData = prepareChartData(userMessageCounts, users, dateRange);
+	const dailyFormatted = formatForRecharts(dailyData, users);
 
 	// Prepare weekly data
 	const weeklyData = aggregateByTimeUnit(
@@ -168,6 +201,7 @@ export function prepareAllChartData(
 		dateRange,
 		"week",
 	);
+	const weeklyFormatted = formatForRecharts(weeklyData, users);
 
 	// Prepare monthly data
 	const monthlyData = aggregateByTimeUnit(
@@ -176,10 +210,11 @@ export function prepareAllChartData(
 		dateRange,
 		"month",
 	);
+	const monthlyFormatted = formatForRecharts(monthlyData, users);
 
 	return {
-		day: dailyData,
-		week: weeklyData,
-		month: monthlyData,
+		day: dailyFormatted,
+		week: weeklyFormatted,
+		month: monthlyFormatted,
 	};
 }

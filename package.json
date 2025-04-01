@@ -24,10 +24,10 @@
 	},
 	"dependencies": {
 		"@slack/web-api": "7.9.1",
-		"chart.js": "4.4.8",
 		"date-fns": "4.1.0",
 		"htm": "3.1.1",
 		"preact": "10.26.4",
-		"preact-render-to-string": "6.5.13"
+		"preact-render-to-string": "6.5.13",
+		"recharts": "2.15.1"
 	}
 }

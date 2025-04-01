@@ -14,6 +14,7 @@ export const styles = `
   .chart-container {
     height: 500px;
     margin-top: 20px;
+    width: 100%;
   }
   .time-selector {
     display: flex;

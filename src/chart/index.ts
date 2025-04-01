@@ -1,16 +1,15 @@
 import { html } from "htm/preact";
-import { h } from "preact";
 import { render } from "preact-render-to-string";
 
+import type { UserInfo, UserMessageCounts } from "../types.ts";
 import { generateClientScript } from "./client-script.ts";
 import { ChartComponent } from "./components/ChartComponent.ts";
 import { TimeSelector } from "./components/TimeSelector.ts";
 import { generateDateRange, prepareAllChartData } from "./data-aggregator.ts";
 import { styles } from "./styles.ts";
-import type { ChartProps, UserInfo, UserMessageCounts } from "./types.d.ts";
 
 // App component that matches the client-side App for hydration
-function App({ chartData }: { chartData: Record<string, unknown> }) {
+function App() {
 	return html`
     <div className="container">
       <h1>Slack Message Activity (Last 90 Days)</h1>
@@ -32,7 +31,7 @@ export function generateHtmlChart(
 	const clientScript = generateClientScript(chartData);
 
 	// Render the Preact app to string using html
-	const appHtml = render(html`<${App} chartData=${chartData} />`);
+	const appHtml = render(html`<${App} />`);
 
 	// Create HTML content with Chart.js and module script type
 	return `
