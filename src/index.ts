@@ -1,8 +1,8 @@
 import fs from "node:fs/promises";
 
-import { generateHtmlChart } from "./chart-generator.ts";
+import { generateHtmlChart } from "./chart/index.ts";
 import { fetchUserDetails, fetchUserMessages } from "./slack-service.ts";
-import type { SlackConfig, UserInfo } from "./types.ts";
+import type { SlackConfig } from "./types.ts";
 
 async function main() {
 	// Check for environment variables
