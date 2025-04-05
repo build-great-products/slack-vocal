@@ -1,12 +1,11 @@
 import { WebClient } from "@slack/web-api";
 import { format, fromUnixTime, getUnixTime, subDays } from "date-fns";
-
 import type {
 	MessageCounts,
 	SlackConfig,
 	UserInfo,
 	UserMessageCounts,
-} from "./types.ts";
+} from "./types";
 
 export async function fetchUserDetails(
 	token: string,
@@ -21,7 +20,7 @@ export async function fetchUserDetails(
 			throw new Error(`User not found: ${userId}`);
 		}
 
-		// Prefer the display name, fallback to real name, then to the user ID if neither exists
+		// Prefer display name, fallback to real name, then user ID
 		const name =
 			response.user.profile?.display_name &&
 			response.user.profile.display_name.trim() !== ""
