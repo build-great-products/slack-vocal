@@ -1,18 +1,18 @@
 <script lang="ts">
-import { format } from "date-fns";
+import { format } from 'date-fns'
 
-export let data;
-export let form;
+export let data
+export let form
 
-let syncing = false;
+let syncing = false
 
 function handleSyncClick() {
-	syncing = true;
+  syncing = true
 }
 
-$: lastSyncDate = data.lastSyncDate;
-$: lastSyncText = data.lastSyncText;
-$: syncSuccess = form?.success;
+$: lastSyncDate = data.lastSyncDate
+$: lastSyncText = data.lastSyncText
+$: syncSuccess = form?.success
 </script>
 
 <svelte:head>

@@ -1,7 +1,19 @@
 {
-	"$schema": "https://unpkg.com/knip@5/schema.json",
-	"entry": ["src/index.ts"],
-	"project": ["src/**/*.ts"],
-	"ignoreDependencies": ["@types/*", "recharts"],
-	"ignore": ["**/*.d.ts", "node_modules/**"]
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "svelte": {
+    "entry": [
+      "./src/routes/**/+{layout,page,server,error}{,.server}.{svelte,ts}",
+      "./svelte.config.js"
+    ],
+    "project": ["./src/**/*.ts"]
+  },
+  "paths": {
+    "$lib/*": ["src/lib/*"],
+    "$app/*": ["node_modules/@sveltejs/kit/src/runtime/app/*"],
+    "$env/*": ["node_modules/@sveltejs/kit/src/runtime/env/*"]
+  },
+  "ignore": [],
+  "ignoreDependencies": [],
+  "ignoreBinaries": [],
+  "ignoreExportsUsedInFile": true
 }

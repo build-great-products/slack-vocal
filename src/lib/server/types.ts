@@ -1,53 +1,24 @@
 export type UserInfo = {
-	id: string;
-	name: string;
-};
+  id: string
+  name: string
+}
 
 export type MessageCounts = {
-	[date: string]: number;
-};
+  [date: string]: number
+}
 
 export type UserMessageCounts = {
-	[userId: string]: MessageCounts;
-};
+  [userId: string]: MessageCounts
+}
 
 export type SlackConfig = {
-	token: string;
-	users: UserInfo[];
-};
+  token: string
+  users: UserInfo[]
+}
 
-export type TimeUnit = "day" | "week" | "month";
+export type TimeUnit = 'day' | 'week' | 'month'
 
-export type ChartDataset = {
-	name: string;
-	data: (number | null)[];
-	color: string;
-};
-
-export type ChartData = {
-	labels: string[];
-	datasets: ChartDataset[];
-};
-
-export type FormattedChartData = {
-	day: ChartData;
-	week: ChartData;
-	month: ChartData;
-};
-
-// Database models
-export type DBUser = {
-	id: string;
-	name: string;
-};
-
-export type DBMessage = {
-	user_id: string;
-	date: string;
-	count: number;
-};
-
-export type DBSyncInfo = {
-	id: 1;
-	last_sync_time: number;
-};
+export type ChartData = Array<{
+  date: string
+  [key: string]: number | string
+}>

@@ -8,15 +8,27 @@ importers:
 
   .:
     dependencies:
+      '@csstools/normalize.css':
+        specifier: 12.1.1
+        version: 12.1.1
       '@slack/web-api':
         specifier: 7.9.1
         version: 7.9.1
+      '@stayradiated/error-boundary':
+        specifier: 4.3.0
+        version: 4.3.0
       better-sqlite3:
         specifier: 11.9.1
         version: 11.9.1
       d3-array:
         specifier: 3.2.4
         version: 3.2.4
+      d3-format:
+        specifier: 3.1.0
+        version: 3.1.0
+      d3-quadtree:
+        specifier: 3.0.1
+        version: 3.0.1
       d3-scale:
         specifier: 4.0.2
         version: 4.0.2
@@ -26,6 +38,9 @@ importers:
       d3-shape:
         specifier: 3.2.0
         version: 3.2.0
+      d3-time-format:
+        specifier: 4.1.0
+        version: 4.1.0
       date-fns:
         specifier: 4.1.0
         version: 4.1.0
@@ -54,6 +69,15 @@ importers:
       '@types/better-sqlite3':
         specifier: 7.6.13
         version: 7.6.13
+      '@types/d3-array':
+        specifier: 3.2.1
+        version: 3.2.1
+      '@types/d3-format':
+        specifier: 3.0.4
+        version: 3.0.4
+      '@types/d3-quadtree':
+        specifier: 3.0.6
+        version: 3.0.6
       '@types/d3-scale':
         specifier: 4.0.9
         version: 4.0.9
@@ -63,6 +87,9 @@ importers:
       '@types/d3-shape':
         specifier: 3.1.7
         version: 3.1.7
+      '@types/d3-time-format':
+        specifier: 4.0.3
+        version: 4.0.3
       eslint:
         specifier: 9.24.0
         version: 9.24.0(jiti@2.4.2)
@@ -73,8 +100,8 @@ importers:
         specifier: 16.0.0
         version: 16.0.0
       knip:
-        specifier: 5.46.5
-        version: 5.46.5(@types/node@22.14.0)(typescript@5.8.3)
+        specifier: 5.47.0
+        version: 5.47.0(@types/node@22.14.0)(typescript@5.8.3)
       svelte:
         specifier: 5.25.7
         version: 5.25.7
@@ -149,6 +176,9 @@ packages:
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [win32]
+
+  '@csstools/normalize.css@12.1.1':
+    resolution: {integrity: sha512-YAYeJ+Xqh7fUou1d1j9XHl44BmsuThiTr4iNrgCQ3J27IbhXsxXDGZ1cXv8Qvs99d4rBbLiSKy3+WZiet32PcQ==}
 
   '@esbuild/aix-ppc64@0.25.2':
     resolution: {integrity: sha512-wCIboOL2yXZym2cgm6mlA742s9QeJ8DjGVaL39dLN4rRwrOgOyYSnOaFPhKZGLb2ngj4EyfAFjsNJwPXZvseag==}
@@ -533,6 +563,9 @@ packages:
     engines: {node: '>=8.10'}
     hasBin: true
 
+  '@stayradiated/error-boundary@4.3.0':
+    resolution: {integrity: sha512-fCTFrdkb+im3yaVheb5xFuLKVuJS2WAP18gwrW3NYwsWc31MMAn5Phtazv6HERnNJIM9DRkYCE0Nmnr9eGXljg==}
+
   '@sveltejs/acorn-typescript@1.0.5':
     resolution: {integrity: sha512-IwQk4yfwLdibDlrXVE04jTZYlLnwsTT2PIOQQGNLWfjavGifnk1JD1LcZjZaBTRcxZu2FfPfNLOE04DSu9lqtQ==}
     peerDependencies:
@@ -573,8 +606,17 @@ packages:
   '@types/cookie@0.6.0':
     resolution: {integrity: sha512-4Kh9a6B2bQciAhf7FSuMRRkUWecJgJu9nPnx3yzpsfXX/c50REIqpHY4C82bXP90qrLtXtkDxTZosYO3UpOwlA==}
 
+  '@types/d3-array@3.2.1':
+    resolution: {integrity: sha512-Y2Jn2idRrLzUfAKV2LyRImR+y4oa2AntrgID95SHJxuMUrkNXmanDSed71sRNZysveJVt1hLLemQZIady0FpEg==}
+
+  '@types/d3-format@3.0.4':
+    resolution: {integrity: sha512-fALi2aI6shfg7vM5KiR1wNJnZ7r6UuggVqtDA+xiEdPZQwy/trcQaHnwShLuLdta2rTymCNpxYTiMZX/e09F4g==}
+
   '@types/d3-path@3.1.1':
     resolution: {integrity: sha512-VMZBYyQvbGmWyWVea0EHs/BwLgxc+MKi1zLDCONksozI4YJMcTt8ZEuIR4Sb1MMTE8MMW49v0IwI5+b7RmfWlg==}
+
+  '@types/d3-quadtree@3.0.6':
+    resolution: {integrity: sha512-oUzyO1/Zm6rsxKRHA1vH0NEDG58HrT5icx/azi9MF1TWdtttWl0UIUsjEQBBh+SIkrpd21ZjEv7ptxWys1ncsg==}
 
   '@types/d3-scale@4.0.9':
     resolution: {integrity: sha512-dLmtwB8zkAeO/juAMfnV+sItKjlsw2lKdZVVy6LRr0cBmegxSABiLEpGVmSJJ8O08i4+sGR6qQtb6WtuwJdvVw==}
@@ -584,6 +626,9 @@ packages:
 
   '@types/d3-shape@3.1.7':
     resolution: {integrity: sha512-VLvUQ33C+3J+8p+Daf+nYSOsjB4GXp19/S/aGo60m9h1v6XaxjiT82lKVWJCfzhtuZ3yD7i/TPeC/fuKLLOSmg==}
+
+  '@types/d3-time-format@4.0.3':
+    resolution: {integrity: sha512-5xg9rC+wWL8kdDj153qZcsJ0FWiFt0J5RB6LYUNZjwSnesfblqrI/bJ1wBdJ8OQfncgbJG5+2F+qfqnqyzYxyg==}
 
   '@types/d3-time@3.0.4':
     resolution: {integrity: sha512-yuzZug1nkAAaBlBBikKZTgzCeA+k1uy4ZFwWANOfKw5z5LRhV0gNA7gNkKm7HoK+HRN0wX3EkxGk0fpbWhmB7g==}
@@ -797,6 +842,10 @@ packages:
 
   d3-path@3.1.0:
     resolution: {integrity: sha512-p3KP5HCf/bvjBSSKuXid6Zqijx7wIfNW+J/maPs+iwR35at5JCbLUT0LzF1cnjbCHWhqzQTIN2Jpe8pRebIEFQ==}
+    engines: {node: '>=12'}
+
+  d3-quadtree@3.0.1:
+    resolution: {integrity: sha512-04xDrxQTDTCFwP5H6hRhsRcb9xxv2RzkcsygFzmkSIOJy3PeRJP7sNk3VRIbKXcog561P9oU0/rVH6vDROAgUw==}
     engines: {node: '>=12'}
 
   d3-scale@4.0.2:
@@ -1171,8 +1220,8 @@ packages:
     resolution: {integrity: sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ==}
     engines: {node: '>=6'}
 
-  knip@5.46.5:
-    resolution: {integrity: sha512-w5t4K/raY8R8nJ9TZZBi/rZNsrJie6qYUJiL+A8l/4/002WQwzBfFMJftEo1opxgsV0ounFPJYy/9AAw3CO4Rg==}
+  knip@5.47.0:
+    resolution: {integrity: sha512-ikjijudvI81Iv49YJqgujJlGSXnCTFBTU9/NwHqW9wLA31IslEs+6npRL1TAdvT7Q+5mOOh6c8xrIwGd9sV+IQ==}
     engines: {node: '>=18.18.0'}
     hasBin: true
     peerDependencies:
@@ -1686,6 +1735,8 @@ snapshots:
   '@biomejs/cli-win32-x64@1.9.4':
     optional: true
 
+  '@csstools/normalize.css@12.1.1': {}
+
   '@esbuild/aix-ppc64@0.25.2':
     optional: true
 
@@ -1958,6 +2009,8 @@ snapshots:
       ignore: 5.3.2
       p-map: 4.0.0
 
+  '@stayradiated/error-boundary@4.3.0': {}
+
   '@sveltejs/acorn-typescript@1.0.5(acorn@8.14.1)':
     dependencies:
       acorn: 8.14.1
@@ -2012,7 +2065,13 @@ snapshots:
 
   '@types/cookie@0.6.0': {}
 
+  '@types/d3-array@3.2.1': {}
+
+  '@types/d3-format@3.0.4': {}
+
   '@types/d3-path@3.1.1': {}
+
+  '@types/d3-quadtree@3.0.6': {}
 
   '@types/d3-scale@4.0.9':
     dependencies:
@@ -2023,6 +2082,8 @@ snapshots:
   '@types/d3-shape@3.1.7':
     dependencies:
       '@types/d3-path': 3.1.1
+
+  '@types/d3-time-format@4.0.3': {}
 
   '@types/d3-time@3.0.4': {}
 
@@ -2252,6 +2313,8 @@ snapshots:
       d3-color: 3.1.0
 
   d3-path@3.1.0: {}
+
+  d3-quadtree@3.0.1: {}
 
   d3-scale@4.0.2:
     dependencies:
@@ -2633,7 +2696,7 @@ snapshots:
 
   kleur@4.1.5: {}
 
-  knip@5.46.5(@types/node@22.14.0)(typescript@5.8.3):
+  knip@5.47.0(@types/node@22.14.0)(typescript@5.8.3):
     dependencies:
       '@nodelib/fs.walk': 3.0.1
       '@snyk/github-codeowners': 1.1.0

@@ -1,13 +1,13 @@
 <script lang="ts">
-import type { Snippet } from "svelte";
+import type { Snippet } from 'svelte'
 
-import "../app.css";
+import '@csstools/normalize.css'
 
 type Props = {
-	children: Snippet;
-};
+  children: Snippet
+}
 
-const { children }: Props = $props();
+const { children }: Props = $props()
 </script>
 
 {@render children()}

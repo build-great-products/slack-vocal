@@ -1,18 +1,17 @@
 <script lang="ts">
-import TimeSelector from "$lib/components/TimeSelector.svelte";
-import Chart from "$lib/components/Chart.svelte";
+import TimeSelector from '$lib/components/TimeSelector.svelte'
+import Chart from '$lib/components/Chart.svelte'
 
-import type { TimeUnit } from "$lib/server/types.js";
-import type { PageData } from "./$types.js";
+import type { TimeUnit } from '$lib/server/types.js'
+import type { PageData } from './$types.js'
 
 type Props = {
-	data: PageData;
-};
+  data: PageData
+}
 
-const { data }: Props = $props();
+const { data }: Props = $props()
 
-let activeTimeUnit = $state<TimeUnit>("day");
-const chartData = $derived(data.chartData[activeTimeUnit]);
+let activeTimeUnit = $state<TimeUnit>('day')
 </script>
 
 <svelte:head>
@@ -27,7 +26,7 @@ const chartData = $derived(data.chartData[activeTimeUnit]);
 
   <TimeSelector bind:activeTimeUnit />
 
-  <Chart data={chartData} />
+  <Chart data={data.chartData} />
 
   <div class="info-footer">
     <p>Displaying data for the last 90 days. Historical data is preserved in the database.</p>

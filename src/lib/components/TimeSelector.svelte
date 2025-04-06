@@ -1,10 +1,10 @@
 <script lang="ts">
-import type { TimeUnit } from "$lib/server/types";
+import type { TimeUnit } from '$lib/server/types'
 
-export let activeTimeUnit: TimeUnit = "day";
+export let activeTimeUnit: TimeUnit = 'day'
 
 function handleTimeUnitChange(newUnit: TimeUnit) {
-	activeTimeUnit = newUnit;
+  activeTimeUnit = newUnit
 }
 </script>
 
