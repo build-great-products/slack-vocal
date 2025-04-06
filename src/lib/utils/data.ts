@@ -42,7 +42,7 @@ function prepareDailyChartData(
 	const datasets = users.map((user, index) => {
 		const messageCounts = userMessageCounts[user.id] || {};
 		const userData = dates.map((date) =>
-			messageCounts[date] ? messageCounts[date] : null,
+			messageCounts[date] ? messageCounts[date] : 0,
 		);
 		const color =
 			COLORBLIND_FRIENDLY_COLORS[index % COLORBLIND_FRIENDLY_COLORS.length];
@@ -119,7 +119,7 @@ function aggregateByTimeUnit(
 	const datasets = users.map((user, index) => {
 		const userData = timeLabels.map((timeKey) => {
 			const count = aggregatedCounts[user.id][timeKey];
-			return count && count > 0 ? count : null;
+			return count ?? 0;
 		});
 		const color =
 			COLORBLIND_FRIENDLY_COLORS[index % COLORBLIND_FRIENDLY_COLORS.length];

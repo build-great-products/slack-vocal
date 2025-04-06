@@ -6,6 +6,13 @@ import type {
 	UserInfo,
 	UserMessageCounts,
 } from "./types";
+import {
+	getLastSyncTime,
+	updateLastSyncTime,
+	saveMessageCounts,
+	upsertUser,
+	getMessageCountsForTimeRange,
+} from "./db";
 
 export async function fetchUserDetails(
 	token: string,
@@ -27,17 +34,17 @@ export async function fetchUserDetails(
 				? response.user.profile.display_name
 				: response.user.real_name || userId;
 
-		return {
-			id: userId,
-			name,
-		};
+		// Save user to the database
+		const userInfo = { id: userId, name };
+		upsertUser(userInfo);
+
+		return userInfo;
 	} catch (error) {
 		console.error(`Error fetching user details for ${userId}:`, error);
 		// Fallback to just using the ID as name
-		return {
-			id: userId,
-			name: userId,
-		};
+		const userInfo = { id: userId, name: userId };
+		upsertUser(userInfo);
+		return userInfo;
 	}
 }
 
@@ -101,11 +108,18 @@ export async function fetchUserMessages(
 ): Promise<UserMessageCounts> {
 	const { token, users } = config;
 	const client = new WebClient(token);
-	const userMessageCounts: UserMessageCounts = {};
 
-	// Calculate timestamp for 90 days ago
-	const ninetyDaysAgo = subDays(new Date(), 90);
-	const oldest = getUnixTime(ninetyDaysAgo);
+	// Get the last sync time from the database
+	let lastSyncTime = getLastSyncTime();
+
+	// If we're syncing for the first time, get data for the last 90 days
+	if (lastSyncTime === 0) {
+		const ninetyDaysAgo = subDays(new Date(), 90);
+		lastSyncTime = getUnixTime(ninetyDaysAgo);
+	}
+
+	// Current time for this sync
+	const currentSyncTime = getUnixTime(new Date());
 
 	// Fetch messages for each user in parallel
 	const fetchPromises = users.map(async (user) => {
@@ -113,16 +127,37 @@ export async function fetchUserMessages(
 			const messageCounts = await fetchSingleUserMessages(
 				client,
 				user.id,
-				oldest,
+				lastSyncTime,
 			);
-			userMessageCounts[user.id] = messageCounts;
+
+			// Save the new message counts to the database
+			if (Object.keys(messageCounts).length > 0) {
+				saveMessageCounts(user.id, messageCounts);
+			}
 		} catch (error) {
 			console.error(`Failed to fetch messages for user ${user.name}:`, error);
-			// Initialize with empty data if fetch fails
-			userMessageCounts[user.id] = {};
 		}
 	});
 
 	await Promise.all(fetchPromises);
-	return userMessageCounts;
+
+	// Update the last sync time
+	updateLastSyncTime(currentSyncTime);
+
+	// Return all message counts from the database
+	const today = new Date();
+	const ninetyDaysAgo = format(subDays(today, 90), "yyyy-MM-dd");
+	const todayStr = format(today, "yyyy-MM-dd");
+
+	return getMessageCountsForTimeRange(ninetyDaysAgo, todayStr);
+}
+
+/**
+ * Fetches the complete message history from the database without making any API calls
+ */
+export function getStoredUserMessages(
+	startDate: string,
+	endDate: string,
+): UserMessageCounts {
+	return getMessageCountsForTimeRange(startDate, endDate);
 }

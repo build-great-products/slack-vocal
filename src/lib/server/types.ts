@@ -34,3 +34,20 @@ export type FormattedChartData = {
 	week: ChartData;
 	month: ChartData;
 };
+
+// Database models
+export type DBUser = {
+	id: string;
+	name: string;
+};
+
+export type DBMessage = {
+	user_id: string;
+	date: string;
+	count: number;
+};
+
+export type DBSyncInfo = {
+	id: 1;
+	last_sync_time: number;
+};

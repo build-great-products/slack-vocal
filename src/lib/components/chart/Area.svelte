@@ -1,9 +1,9 @@
 <script lang="ts">
 import { getContext } from "svelte";
-import { area } from "d3-shape";
+import { area, curveLinear } from "d3-shape";
 import type { LayerCake } from "layercake";
 
-const { data, xGet, yGet, height } = getContext<LayerCake>("LayerCake");
+const { data, xGet, yGet, yScale } = getContext<LayerCake>("LayerCake");
 
 type Props = {
 	// The key in the data that corresponds to this area
@@ -22,7 +22,8 @@ const path = $derived(
 	area()
 		.x((d) => $xGet(d))
 		.y1((d) => $yGet(d, key))
-		.y0($height),
+		.y0(() => $yScale(0))
+		.curve(curveLinear),
 );
 </script>
 
