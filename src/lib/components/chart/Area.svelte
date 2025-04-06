@@ -21,7 +21,7 @@ const { key = undefined, color = "#ab00d6", opacity = 0.2 }: Props = $props();
 const path = $derived(
 	area()
 		.x((d) => $xGet(d))
-		.y1((d) => $yGet(d, key))
+    .y1((d) => $yGet(d)[0])
 		.y0(() => $yScale(0))
 		.curve(curveLinear),
 );
