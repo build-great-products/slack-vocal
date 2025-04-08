@@ -1,8 +1,6 @@
 <script lang="ts">
-import TimeSelector from '$lib/components/TimeSelector.svelte'
 import Chart from '$lib/components/Chart.svelte'
 
-import type { TimeUnit } from '$lib/server/types.js'
 import type { PageData } from './$types.js'
 
 type Props = {
@@ -10,8 +8,6 @@ type Props = {
 }
 
 const { data }: Props = $props()
-
-let activeTimeUnit = $state<TimeUnit>('day')
 </script>
 
 <svelte:head>
@@ -23,8 +19,6 @@ let activeTimeUnit = $state<TimeUnit>('day')
     <h1>Slack Message Activity</h1>
     <a href="/admin" class="admin-link">Admin</a>
   </div>
-
-  <TimeSelector bind:activeTimeUnit />
 
   <Chart data={data.chartData} />
 

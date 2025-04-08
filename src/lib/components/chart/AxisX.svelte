@@ -2,7 +2,7 @@
 import { getContext } from 'svelte'
 import type { LayerCake } from 'layercake'
 
-const { width, height, xScale, yRange } = getContext<LayerCake>('LayerCake')
+const { xScale, percentRange } = getContext<LayerCake>('LayerCake')
 
 type Props = {
   // Show a vertical mark for each tick.
@@ -35,6 +35,8 @@ type Props = {
 
   // If nothing, it uses the default ticks supplied by the D3 function.
   dy?: number
+
+  units?: string
 }
 
 const {
@@ -48,19 +50,8 @@ const {
   tickGutter = 0,
   dx = 0,
   dy = 12,
+  units = $percentRange === true ? '%' : 'px',
 }: Props = $props()
-
-function textAnchor(i: number, sl: boolean) {
-  if (sl === true) {
-    if (i === 0) {
-      return 'start'
-    }
-    if (i === tickVals.length - 1) {
-      return 'end'
-    }
-  }
-  return 'middle'
-}
 
 const tickLen = $derived(tickMarks === true ? (tickMarkLength ?? 6) : 0)
 
@@ -79,56 +70,79 @@ const tickVals = $derived(
 const halfBand = $derived(isBandwidth ? $xScale.bandwidth() / 2 : 0)
 </script>
 
-<g class="axis x-axis" class:snapLabels>
+<div class="axis x-axis" class:snapLabels>
   {#each tickVals as tick, i (tick)}
+    {@const tickValUnits = $xScale(tick)}
+
     {#if baseline === true}
-      <line class="baseline" y1={$height} y2={$height} x1="0" x2={$width} />
+      <div class="baseline" style="top:100%; width:100%;"></div>
     {/if}
 
-    <g class="tick tick-{i}" transform="translate({$xScale(tick)},{Math.max(...$yRange)})">
-      {#if gridlines === true}
-        <line class="gridline" x1={halfBand} x2={halfBand} y1={-$height} y2="0" />
-      {/if}
-      {#if tickMarks === true}
-        <line
-          class="tick-mark"
-          x1={halfBand}
-          x2={halfBand}
-          y1={tickGutter}
-          y2={tickGutter + tickLen}
-        />
-      {/if}
-      <text x={halfBand} y={tickGutter + tickLen} {dx} {dy} text-anchor={textAnchor(i, snapLabels)}
-        >{format(tick)}</text
+    {#if gridlines === true}
+      <div class="gridline" style:left="{tickValUnits}{units}" style="top:0; bottom:0;"></div>
+    {/if}
+    {#if tickMarks === true}
+      <div
+        class="tick-mark"
+        style:left="{tickValUnits + halfBand}{units}"
+        style:height="{tickLen}px"
+        style:bottom="{-tickLen - tickGutter}px"
+      ></div>
+    {/if}
+    <div
+      class="tick tick-{i}"
+      style:left="{tickValUnits + halfBand}{units}"
+      style="top:calc(100% + {tickGutter}px);"
+    >
+      <div
+        class="text"
+        style:top="{tickLen}px"
+        style:transform="translate(calc(-50% + {dx}px), {dy}px)"
       >
-    </g>
+        {format(tick)}
+      </div>
+    </div>
   {/each}
-</g>
+</div>
 
 <style>
+  .axis,
+  .tick,
+  .tick-mark,
+  .gridline,
+  .baseline {
+    position: absolute;
+  }
+  .axis {
+    width: 100%;
+    height: 100%;
+  }
   .tick {
     font-size: 11px;
   }
 
-  line,
-  .tick line {
-    stroke: #aaa;
-    stroke-dasharray: 2;
+  .gridline {
+    border-left: 1px dashed #aaa;
   }
 
-  .tick text {
-    fill: #666;
+  .tick-mark {
+    border-left: 1px solid #aaa;
   }
-
-  .tick .tick-mark,
   .baseline {
-    stroke-dasharray: 0;
+    border-top: 1px solid #aaa;
   }
-  /* This looks slightly better */
-  .axis.snapLabels .tick:last-child text {
-    transform: translateX(3px);
+
+  .tick .text {
+    color: #666;
+    position: relative;
+    white-space: nowrap;
+    transform: translateX(-50%);
   }
-  .axis.snapLabels .tick.tick-0 text {
-    transform: translateX(-3px);
+  /* This looks a little better at 40 percent than 50 */
+  .axis.snapLabels .tick:last-child {
+    transform: translateX(-40%);
+  }
+  .axis.snapLabels .tick.tick-0 {
+    transform: translateX(40%);
   }
 </style>

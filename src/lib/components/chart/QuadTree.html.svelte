@@ -24,7 +24,7 @@ type Props = {
       {
         x: number
         y: number
-        found: [number, number] | undefined
+        found: Record<string, number | Date> | undefined
       },
     ]
   >
@@ -38,13 +38,13 @@ const {
   children,
 }: Props = $props()
 
-let found = $state<[number, number] | undefined>(undefined)
+let found = $state<Record<string, number | Date>>()
 
 const xGetter = $derived(x === 'x' ? $xGet : $yGet)
 const yGetter = $derived(y === 'y' ? $yGet : $xGet)
 
 const finder = $derived(
-  quadtree()
+  quadtree<Record<string, number | Date>>()
     .extent([
       [-1, -1],
       [$width + 1, $height + 1],
@@ -54,17 +54,15 @@ const finder = $derived(
     .addAll(dataset || $data),
 )
 
-function findItem(evt: MouseEvent) {
+function findItem(event: MouseEvent) {
+  const evt = event as unknown as Record<string, number>
+
   const xLayerKey = `layer${x.toUpperCase()}`
   const yLayerKey = `layer${y.toUpperCase()}`
 
-  // Use type assertion for accessing dynamic properties
-  const { [xLayerKey]: xCoord, [yLayerKey]: yCoord } = evt as unknown as {
-    [xLayerKey]: number
-    [yLayerKey]: number
-  }
-
-  found = finder.find(xCoord, yCoord, searchRadius)
+  const xLayerVal = (evt[xLayerKey] / (x === 'x' ? $width : $height)) * 100
+  const yLayerVal = (evt[yLayerKey] / (y === 'y' ? $height : $width)) * 100
+  found = finder.find(xLayerVal, yLayerVal, searchRadius) || undefined
 }
 </script>
 
@@ -76,11 +74,13 @@ function findItem(evt: MouseEvent) {
   role="tooltip"
 ></div>
 
-{@render children({
-  x: xGetter(found) ?? 0,
-  y: yGetter(found) ?? 0,
-  found,
-})}
+{#if found}
+  {@render children({
+    x: xGetter(found) ?? 0,
+    y: yGetter(found) ?? 0,
+    found,
+  })}
+{/if}
 
 <style>
   .bg {

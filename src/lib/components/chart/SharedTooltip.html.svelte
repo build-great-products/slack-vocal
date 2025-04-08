@@ -46,8 +46,10 @@ const w2 = w / 2
 /**
  * Sort the keys by the highest value
  */
-function sortResult(result: Record<string, unknown>): ResultRow[] {
-  if (Object.keys(result).length === 0) return []
+function sortResult(result: Record<string, number | Date>): ResultRow[] {
+  if (Object.keys(result).length === 0) {
+    return []
+  }
 
   const rows = Object.keys(result)
     .filter((d) => d !== $config.x)
@@ -57,7 +59,7 @@ function sortResult(result: Record<string, unknown>): ResultRow[] {
         value: result[key],
       }
     })
-    .sort((a, b) => b.value - a.value)
+    .sort((a, b) => +b.value - +a.value)
 
   return rows
 }
@@ -65,16 +67,15 @@ function sortResult(result: Record<string, unknown>): ResultRow[] {
 
 <QuadTree dataset={dataset || $data} y="x">
   {#snippet children({ x, found })}
-    {@const foundSorted = sortResult(found)}
     {#if found}
-      <div style="left:{x}px;" class="line"></div>
+      {@const foundSorted = sortResult(found)}
+      <div style="left:{(x / 100) * $width}px;" class="line"></div>
       <div
         class="tooltip"
         style="
           width:{w}px;
-          display: {visible ? 'block' : 'none'};
-          top:{$yScale(foundSorted[0]?.value) + offset}px;
-          left:{Math.min(Math.max(w2, x), $width - w2)}px;"
+          top:calc({$yScale(foundSorted[0].value)}% + {offset}px);
+          left:{Math.min(Math.max(w2, (x / 100) * $width), $width - w2)}px;"
       >
         <div class="title">{formatTitle(found[$config.x])}</div>
         {#each foundSorted as row, index (index)}
@@ -98,7 +99,6 @@ function sortResult(result: Record<string, unknown>): ResultRow[] {
     transform: translate(-50%, -100%);
     padding: 5px;
     z-index: 15;
-    pointer-events: none;
   }
   .line {
     position: absolute;
